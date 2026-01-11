@@ -1,0 +1,154 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3db8ea59-2913-4da8-a3ce-b4163e5e2162",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://newsapi.org/v2/everything?q=tecnologia&language=es&sortBy=publishedAt&apiKey=15587faad6a04236900ec5d99ff4e5cc",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e397c0f9-802e-4d4a-8e47-81489427bb01",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres un periodista tech. Toma las noticias que te paso y genera un resumen directamente. NO saludes. Formato: 🚀 NOTICIAS TEC DE HOY • [Título] - [Resumen]. Si no hay datos, indica que hubo un error al leer la fuente. Noticias para resumir: {{ $node[\"HTTP Request\"].json.articles.map(a => a.title + \": \" + a.description).join(\"\\n\") }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "8cba3afb-7876-49aa-bbc3-bed0bb947acb",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        288,
+        208
+      ],
+      "id": "b6ed7dce-b190-47be-8a81-b23e4229d07e",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "OEJNAM5vWCQcDmH9",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8479605415",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        768,
+        0
+      ],
+      "id": "b7cc1224-ac89-40dd-b60a-01e034089aef",
+      "name": "Send a text message",
+      "webhookId": "64477638-4b13-4534-886e-66f09a7a198a",
+      "credentials": {
+        "telegramApi": {
+          "id": "k8wqm2bILAUzqfGk",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "1235b402-50c5-4027-9ebb-9411a5cec184",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dd4f37a661a6f6e0ac32d40a8cb52e73dee8f9cdd6c1796a6fa9eb2031fd1d78"
+  },
+  "id": "9BRrEbfFMeYc8T-LmdoTj",
+  "tags": []
+}

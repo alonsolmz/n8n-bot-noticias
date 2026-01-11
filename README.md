@@ -8,13 +8,6 @@ Este proyecto es una automatización inteligente que recopila noticias tecnológ
 * **NewsAPI**: Fuente de datos para titulares globales.
 * **Telegram Bot API**: Interfaz de entrega al usuario.
 
-## 📸 Demo
-![Captura de pantalla de mi flujo en n8n](./img/n8n-workflow.png)
-*Descripción: Flujo de nodos que conecta la API de noticias con el agente de IA y el bot de Telegram.*
-
-![Captura de pantalla de Telegram](./img/telegram-demo.jpg)
-*Descripción: Ejemplo real del resumen recibido en el móvil.*
-
 ## 🚀 Cómo Replicar este Proyecto
 1. Instala n8n localmente.
 2. Importa el archivo `workflow.json` incluido en este repositorio.
